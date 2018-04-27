@@ -1,0 +1,49 @@
+version: "2"
+services:
+  backend:
+    image: node:latest
+    container_name: backend
+    volumes: 
+     - ".:/src"
+    ports:
+     - "8081:3000"
+    working_dir: /src
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+    command: bash -c "node ./bin/automigrate.js && node ."
+    restart: on-failure
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/data/log
+    volumes:
+      - ./mongo/data:/data/db
+      - ./mongo/log:/data/log
+    ports:
+        - 27017:27017
+    command: mongod --smallfiles
+#  mongo-seed:
+#    image: mongo
+#    command: mongoimport --host mongodb --db bandreactor --collection persons --type json --file /init.json --jsonArray
+#    volumes:
+#      - ./mongo/init.json:/init.json
+#    links:
+#      - mongodb
+##    depends_on:
+#      - mongodb
+#    restart: on-failure
+  mongo-client:
+    restart: on-failure
+    image: mongoclient/mongoclient
+    ports:
+      - "8080:3000"
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017

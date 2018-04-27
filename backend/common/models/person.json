@@ -1,0 +1,24 @@
+{
+  "name": "person",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "email": {
+      "type": "string",
+      "required": true
+    },
+    "createdAt": {
+      "type": "date"
+    },
+    "lastModifiedAt": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
